@@ -11,3 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+Fs   = require 'fs'
+Path = require 'path'
+
+module.exports = (robot, callback) ->
+  path = Path.resolve __dirname, 'scripts'
+  Fs.exists path, (exists) ->
+    if exists
+      for file in Fs.readdirSync(path)
+        if Fs.lstatSync(Path.resolve path, file).isFile()
+          robot.loadFile path, file
+    callback() if callback?
