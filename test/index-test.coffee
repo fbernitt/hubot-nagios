@@ -12,3 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+Path = require 'path'
+
+chai = require 'chai'
+sinon = require 'sinon'
+chai.use require 'sinon-chai'
+
+expect = chai.expect
+
+describe 'index', ->
+  robot =
+
+  beforeEach ->
+    robot =
+      loadFile: sinon.spy()
+
+  it 'should load scripts', ->
+    require('../src/index')(robot, () ->
+      expect(robot.loadFile).to.have.been.calledWith(Path.resolve(__dirname, '..', 'src', 'scripts'), 'nagios.coffee')
+      expect(robot.loadFile).to.have.been.calledOnce
+    )
