@@ -34,6 +34,39 @@ Add `hubot-nagios` to `external-scripts.json`.
 You need to specify the chat room to use for build events and the cctray.xml to use on startup:
 
     % HUBOT_NAGIOS_EVENT_NOTIFIER_ROOM="#roomname" \
-      HUBOT_NAGIOS_URL="https://<username>:<password>@nagioshost.tld/cgi-bin/nagios3" \
       bin/hubot
+
+Within nagios configuration you need to add a new contact that calls the hubot webhook:
+
+```
+define contact {
+        alias                          hubot
+        host_notification_period       24x7
+        service_notification_options   w,u,c,r
+        contact_name                   hubot
+        email                          someone@somedomain.tld
+        host_notification_options      d,r
+        service_notification_period    24x7
+        service_notification_commands  notify-service-by-hubot
+        host_notification_commands     notify-host-by-hubot
+}
+```
+
+And add this new contact as a member to at least one contactgroup.
+
+
+You need to add these new commands:
+```
+define command {
+        command_name                    notify-service-by-hubot
+        command_line                    /usr/bin/curl -d host="$HOSTALIAS$" -d serviceoutput="$SERVICEOUTPUT$" -d servicedescription="$SERVICEDESC$" -d notificationtype="$NOTIFICATIONTYPE$" -d servicestate="$SERVICESTATE$" https://username:password@hubot.somedomain.tld/hubot/nagios/service
+}
+
+define command {
+        command_name                    notify-host-by-hubot
+        command_line                    /usr/bin/curl -d host="$HOSTNAME$" -d hostoutput="$HOSTOUTPUT$" -d notificationtype="$NOTIFICATIONTYPE$" -d hoststate="$HOSTSTATE$" https://username:password@hubot.somedomain.tld/hubot/nagios/host
+}
+```
+
+That's it!
 
