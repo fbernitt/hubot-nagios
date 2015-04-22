@@ -106,11 +106,6 @@ describe 'nagios', ->
   it 'should activate a webhook for host notifications', ->
     expect(mock_robot.router.post).to.have.been.calledWith('/hubot/nagios/host', sinon.match.func)
 
-  it 'should reply with OK to test', ->
-    bot.adapter.receive "test"
-    expect(bot.sent.length).to.equal(1)
-    expect(bot.sent[0]).to.equal('OK')
-
   it 'should react to host post messages', (done) ->
     bot.brain.data.nagios_event_room = '#testroom'
     data = querystring.stringify({host: 'test',

@@ -39,9 +39,6 @@ module.exports = (robot) ->
 
     response.end ""
 
-  robot.hear /test/i, (msg) ->
-    msg.send "OK"
-
 event_room = (robot) ->
   return robot.brain.data.nagios_event_room
 
